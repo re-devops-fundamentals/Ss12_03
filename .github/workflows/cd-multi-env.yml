@@ -1,0 +1,66 @@
+name: Multi-Environment CD (Staging & Production)
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  workflow_dispatch:
+
+jobs:
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/develop'
+    environment:
+      name: staging
+      url: https://staging.example.com/api/tasks
+    steps:
+      - name: Checkout mã nguồn
+        uses: actions/checkout@v5
+
+      - name: Kiểm tra thông tin môi trường Staging
+        run: |
+          echo "=========================================="
+          echo "🚀 Triển khai lên môi trường: STAGING"
+          echo "Nhánh kích hoạt: ${{ github.ref_name }}"
+          echo "Commit SHA: ${{ github.sha }}"
+          echo "Người thực hiện: ${{ github.actor }}"
+          echo "=========================================="
+
+      - name: Thực thi kịch bản triển khai Staging
+        run: |
+          echo "1. Chuẩn bị container image cho Staging..."
+          echo "2. Cập nhật cấu hình môi trường staging..."
+          echo "3. Khởi động ứng dụng Task API trên cụm Staging..."
+          echo "4. Kiểm tra trạng thái dịch vụ (Health Check)..."
+          echo "✅ Triển khai hoàn tất thành công lên Staging!"
+
+  deploy-prod:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    environment:
+      name: production
+      url: https://api.prod.example.com
+    steps:
+      - name: Checkout mã nguồn
+        uses: actions/checkout@v5
+
+      - name: Kiểm tra thông tin môi trường Production
+        run: |
+          echo "=========================================="
+          echo "🛡️ Triển khai lên môi trường: PRODUCTION"
+          echo "Đã vượt qua bước kiểm duyệt thủ công (Manual Approval)!"
+          echo "Nhánh kích hoạt: ${{ github.ref_name }}"
+          echo "Commit SHA: ${{ github.sha }}"
+          echo "Người phê duyệt & thực thi: ${{ github.actor }}"
+          echo "=========================================="
+
+      - name: Thực thi kịch bản triển khai Production (Zero Downtime)
+        run: |
+          echo "1. Xác thực bảo mật chứng chỉ sản xuất..."
+          echo "2. Kéo image phiên bản chính thức (Production release)..."
+          echo "3. Triển khai theo chiến lược Rolling Update..."
+          echo "4. Kiểm tra tính toàn vẹn hệ thống và giám sát APM..."
+          echo "✅ Triển khai hoàn tất thành công lên Production!"
